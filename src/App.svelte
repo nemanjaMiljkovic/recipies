@@ -1,24 +1,47 @@
 <script lang="ts">
-    let searchText = ''
+    import CocktailAPI from './services/cocktails'
+    import { filterKeysFromObject } from './utils/objects'
+    import type { CocktailState } from './types/cocktail'
+    import { onMount } from 'svelte'
+    import Form from './components/Form/Form.svelte'
+    import CocktailList from './components/CocktailList/CocktailList.svelte'
 
-    function onSubmit(e) {
-        e.preventDefault()
+    let inputRef: HTMLInputElement
+    let searchText = ''
+    let cocktails: CocktailState[] = []
+
+    onMount(() => {
+        inputRef.focus()
+    })
+
+    function onSubmit() {
+        CocktailAPI.getCocktailByName(searchText).then((res) => {
+            cocktails = res.data.drinks.map(
+                ({ strDrink, strDrinkThumb, ...rest }) => {
+                    const ingredients = filterKeysFromObject(
+                        'strIngredient',
+                        rest as Record<string, string>
+                    )
+                    const ingredientValues: string[] =
+                        Object.values(ingredients)
+
+                    return {
+                        strDrink,
+                        strDrinkThumb,
+                        ingredients: ingredientValues,
+                    }
+                }
+            )
+        })
     }
 </script>
 
 <main class="p-20">
-    <h1 class="text-3xl mb-20">Recipes</h1>
-    <form on:submit={onSubmit}>
-        <input
-            bind:value={searchText}
-            type="text"
-            class="border-2 p-2 rounded-sm w-72 mr-6"
-        />
-        <button class="rounded-sm bg-indigo-500 px-6 py-2 text-white"
-            >Search</button
-        >
-    </form>
+    <section class="mb-20">
+        <h1 class="text-3xl mb-20">Recipes</h1>
+        <Form bind:value={searchText} bind:inputEl={inputRef} {onSubmit} />
+    </section>
+    <section>
+        <CocktailList bind:cocktails />
+    </section>
 </main>
-
-<style>
-</style>
