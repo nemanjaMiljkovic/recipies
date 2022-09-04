@@ -1,0 +1,13 @@
+version: "3.4"
+services:
+  client:
+    image: dev
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile.dev
+    ports:
+      - 5173:5173
+      - 24678:24678
+    volumes:
+      - ./:/usr/app/recipes
