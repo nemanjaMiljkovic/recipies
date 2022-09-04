@@ -19,6 +19,7 @@
     "@tsconfig/svelte": "^3.0.0",
     "@types/testing-library__jest-dom": "^5.14.5",
     "autoprefixer": "^10.4.8",
+    "cypress": "^10.7.0",
     "jsdom": "^20.0.0",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
@@ -30,8 +31,9 @@
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
     "vite": "^3.0.7",
-    "vitest": "^0.22.1",
-    "cypress": "^10.7.0"
+    "vitest": "^0.22.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "axios": "^0.27.2"
+  }
 }
