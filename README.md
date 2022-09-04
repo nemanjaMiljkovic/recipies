@@ -1,6 +1,6 @@
 # Cocktail Recipes
 
-[![Build Status](https://github.com/nemanjaMiljkovic/recipies/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/nemanjaMiljkovic/recipies/actions/workflows/deploy.yml)
+[![Build](https://github.com/nemanjaMiljkovic/recipies/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/nemanjaMiljkovic/recipies/actions/workflows/deploy.yml)
 
 ## Requirements
 
