@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy app
 
 on:
   push:
@@ -10,14 +10,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      - name: Install and Build
-        run: |
-          npm install
-          npm run build
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages
-          folder: dist
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm run test
+      - name: Build
+        run: npm run build
+#  e2e-tests:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Install dependencies
+#        uses: actions/checkout@v2
+#      - name: run cypress tests with chrome
+#        uses: cypress-io/github-action@v2
+#        timeout-minutes: 10
+#        with:
+#          browser: chrome
+#  deploy:
+#    name: 'Deploy to Netlify'
+#    steps:
+#      - uses: jsmrcaga/action-netlify-deploy@v1.1.0
+#        with:
+#          NETLIFY_AUTH_TOKEN: ${{ secrets.MY_TOKEN_SECRET }}
+#          NETLIFY_DEPLOY_TO_PROD: true

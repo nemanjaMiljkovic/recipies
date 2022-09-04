@@ -11,7 +11,7 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest run src",
     "test:watch": "vitest src",
-    "cypress": "cypress open"
+    "test:e2e": "cypress open"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.4",
