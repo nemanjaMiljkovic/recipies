@@ -1,13 +1,63 @@
 /// <reference types="cypress" />
 
-describe('example to-do app', () => {
+describe('Recipes app', () => {
     beforeEach(() => {
         cy.visit('http://localhost:5174/')
-    });
-
-
-    it('displays page', () => {
-        cy.get("h1").should('have.text', "Recipes");
     })
 
+    it('displays app', () => {
+        cy.get('h1').should('have.text', 'Recipes')
+        cy.get('input').should('be.focused')
+        cy.get('button').should('have.text', 'Search')
+    })
+
+    it('submits form on button click', () => {
+        cy.get('input').type('sour').should('have.value', 'sour')
+        cy.get('button').click()
+    })
+
+    it('submits form on "Enter" key press', () => {
+        cy.get('input').as('input').type('sour').should('have.value', 'sour')
+        cy.get('@input').type('{enter}')
+    })
+
+    it('should render cocktails list', () => {
+        cy.intercept('https://www.thecocktaildb.com/api/json/v1/1/*').as(
+            'getCocktails'
+        )
+        cy.get('input').as('input').type('sour').should('have.value', 'sour')
+        cy.get('@input').type('{enter}')
+
+        cy.wait('@getCocktails').should(({ response }) => {
+            const numOfCocktails = response.body.drinks.length
+            cy.get('[data-testid="item"]').should('have.length', numOfCocktails)
+        })
+    })
+
+    it('should render cocktail data', () => {
+        cy.intercept('https://www.thecocktaildb.com/api/json/v1/1/*').as(
+            'getCocktails'
+        )
+        cy.get('input').as('input').type('sour').should('have.value', 'sour')
+        cy.get('@input').type('{enter}')
+
+        cy.wait('@getCocktails').should(({ response }) => {
+            const firstElementData = response.body.drinks[0]
+
+            cy.get('[data-testid="item"]').eq(0).as('first')
+
+            cy.get('@first')
+                .find('[data-testid="title"]')
+                .should('have.text', firstElementData.strDrink)
+
+            cy.get('@first')
+                .find('[data-testid="ingredient"]')
+                .should('have.length.gt', 0)
+
+            cy.get('@first')
+                .find('[data-testid="ingredient"]')
+                .eq(0)
+                .should('have.text', firstElementData.strIngredient1)
+        })
+    })
 })
