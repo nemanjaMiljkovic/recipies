@@ -2,7 +2,7 @@
 
 describe('Recipes app', () => {
     beforeEach(() => {
-        cy.visit('http://localhost:5174/')
+        cy.visit('http://localhost:5173/')
     })
 
     it('displays app', () => {
@@ -19,6 +19,40 @@ describe('Recipes app', () => {
     it('submits form on "Enter" key press', () => {
         cy.get('input').as('input').type('sour').should('have.value', 'sour')
         cy.get('@input').type('{enter}')
+    })
+
+    it('should show loading state', () => {
+        cy.intercept(
+            'https://www.thecocktaildb.com/api/json/v1/1/*',
+            (request) => {
+                request.on('response', (res) => {
+                    res.setThrottle(1000)
+                })
+            }
+        )
+
+        cy.get('input').type('sour')
+        cy.get('button').click()
+        cy.get('p').should('have.text', 'Loading...')
+    })
+
+    it('should show error state', () => {
+        cy.intercept(
+            'https://www.thecocktaildb.com/api/json/v1/1/*',
+            (request) => {
+                request.reply({
+                    statusCode: 400,
+                    body: 'Error',
+                })
+            }
+        )
+
+        cy.get('input').type('sour')
+        cy.get('button').click()
+        cy.get('p').should(
+            'have.text',
+            'Ooops, error happend :( Please try again.'
+        )
     })
 
     it('should render cocktails list', () => {
