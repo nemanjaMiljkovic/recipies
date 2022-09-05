@@ -3,9 +3,10 @@ import type { AxiosInstance } from 'axios'
 
 class Fetcher {
     fetcherInstance: AxiosInstance
-    constructor(private baseURL: string) {
+    constructor(private baseURL: string, timeout: number) {
         this.fetcherInstance = axios.create({
             baseURL,
+            timeout,
         })
     }
     get(url: string) {
@@ -14,5 +15,6 @@ class Fetcher {
 }
 
 export const fetcher = new Fetcher(
-    'https://www.thecocktaildb.com/api/json/v1/1'
+    import.meta.env.VITE_API_URL,
+    import.meta.env.VITE_REQUEST_TIMEOUT
 )

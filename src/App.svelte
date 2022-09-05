@@ -9,30 +9,39 @@
     let inputRef: HTMLInputElement
     let searchText = ''
     let cocktails: CocktailState[] = []
+    let isLoading = false
+    let hasError = false
 
     onMount(() => {
         inputRef.focus()
     })
 
     function onSubmit() {
-        CocktailAPI.getCocktailByName(searchText).then((res) => {
-            cocktails = res.data.drinks.map(
-                ({ strDrink, strDrinkThumb, ...rest }) => {
-                    const ingredients = filterKeysFromObject(
-                        'strIngredient',
-                        rest as Record<string, string>
-                    )
-                    const ingredientValues: string[] =
-                        Object.values(ingredients)
+        isLoading = true
+        CocktailAPI.getCocktailByName(searchText)
+            .then((res) => {
+                isLoading = false
+                cocktails = res.data.drinks.map(
+                    ({ strDrink, strDrinkThumb, ...rest }) => {
+                        const ingredients = filterKeysFromObject(
+                            'strIngredient',
+                            rest as Record<string, string>
+                        )
+                        const ingredientValues: string[] =
+                            Object.values(ingredients)
 
-                    return {
-                        strDrink,
-                        strDrinkThumb,
-                        ingredients: ingredientValues,
+                        return {
+                            strDrink,
+                            strDrinkThumb,
+                            ingredients: ingredientValues,
+                        }
                     }
-                }
-            )
-        })
+                )
+            })
+            .catch(() => {
+                isLoading = false
+                hasError = true
+            })
     }
 </script>
 
@@ -42,6 +51,14 @@
         <Form bind:value={searchText} bind:inputEl={inputRef} {onSubmit} />
     </section>
     <section>
-        <CocktailList bind:cocktails />
+        {#if isLoading}
+            <p class="text-md text-gray-500">Loading...</p>
+        {:else if hasError}
+            <p class="text-md text-gray-500">
+                Ooops, error happend :( Please try again.
+            </p>
+        {:else}
+            <CocktailList bind:cocktails />
+        {/if}
     </section>
 </main>
